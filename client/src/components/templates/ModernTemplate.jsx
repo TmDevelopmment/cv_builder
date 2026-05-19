@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
+import { Mail, Phone, MapPin, Link, Globe } from "lucide-react";
 
 const ModernTemplate = ({ data, accentColor }) => {
 	const formatDate = (dateStr) => {
