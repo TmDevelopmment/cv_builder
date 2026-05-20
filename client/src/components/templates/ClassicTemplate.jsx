@@ -39,7 +39,7 @@ const ClassicTemplate = ({ data, accentColor }) => {
                     )}
                     {data.personal_info?.linkedin && (
                         <div className="flex items-center gap-1">
-                            <Linkedin className="size-4" />
+                            <Link className="size-4" />
                             <span className="break-all">{data.personal_info.linkedin}</span>
                         </div>
                     )}
