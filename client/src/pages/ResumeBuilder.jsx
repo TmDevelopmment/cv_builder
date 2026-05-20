@@ -15,6 +15,12 @@ import {
 import PersonalInfoForm from "../components/PersonalInfoForm";
 import ResumePreview from "../components/ResumePreview";
 import TemplateSelector from "../components/TemplateSelector";
+import ColorPicker from "../components/ColorPicker";
+import ProfessionalSummaryForm from "../components/ProfessionalSummaryForm";
+import ExperienceForm from "../components/ExperienceForm";
+import EducationForm from "../components/EducationForm";
+import ProjectForm from "../components/ProjectForm";
+import SkillsForm from "../components/SkillsForm";
 
 const ResumeBuilder = () => {
   const { resumeId } = useParams();
@@ -26,8 +32,8 @@ const ResumeBuilder = () => {
     professional_summary: "",
     experience: [],
     education: [],
-    skills: [],
     projects: [],
+    skills: [],
     templates: "classic",
     assent_color: "#3B82F6",
     public: false,
@@ -91,10 +97,14 @@ const ResumeBuilder = () => {
 
                 {/* section navigation */}
                 <div className="flex justify-between items-center mb-6 border-b border-gray-300 py-1">
-                  <div>
+                  <div className="flex items-center gap-2">
                     <TemplateSelector 
                       selectedTemplate={resumeData.templates} 
-                      onChange={(template) => setResumeData(prev => ({ ...prev, templates: template }))} 
+                      onChange={(template) => setResumeData(prev => ({ ...prev, template}))} 
+                    />
+                    <ColorPicker 
+                      selectedColor={resumeData.assent_color} 
+                      onChange={(color) => setResumeData(prev => ({ ...prev, assent_color : color }))} 
                     />
                   </div>
                   <div className="flex items-center">
@@ -143,6 +153,71 @@ const ResumeBuilder = () => {
                         setRemoveBackground={setRemoveBackground}
                       />
                     </div>
+                    )}
+                  {activeSection.id === "professional_summary" && (
+                    <div>
+                      <ProfessionalSummaryForm
+                        data={resumeData.professional_summary}
+                        onChange={(data) =>
+                          setResumeData((prev) => ({
+                            ...prev,
+                            professional_summary: data,
+                          }))
+                        }
+                      />
+                    </div>
+                  )}
+                  {activeSection.id === "experience" && (
+                    <div>
+                      <ExperienceForm
+                        data={resumeData.experience}
+                        onChange={(data) =>
+                          setResumeData((prev) => ({
+                            ...prev,
+                            experience: data,
+                          }))
+                        }
+                      />
+                    </div>
+                  )}
+                    {activeSection.id === "education" && (
+                      <div>
+                        <EducationForm
+                          data={resumeData.education}
+                          onChange={(data) =>
+                            setResumeData((prev) => ({
+                              ...prev,
+                              education: data,
+                            }))
+                          }
+                        />
+                      </div>
+                    )}
+                    {activeSection.id === "projects" && (
+                      <div>
+                        <ProjectForm
+                          data={resumeData.project}
+                          onChange={(data) =>
+                            setResumeData((prev) => ({
+                              ...prev,
+                              project: data,
+                            }))
+                          }
+                        />
+                      </div>
+                    )}
+                    {activeSection.id === "skills" && (
+                      <div>
+                        <SkillsForm
+                          data={resumeData.skills}
+                          onChange={(data) =>
+                            setResumeData((prev) => ({
+                              ...prev,
+                              skills: data,
+                            }))
+                          }
+                        />
+                      </div>
                     )}
                 </div>
               </div>
