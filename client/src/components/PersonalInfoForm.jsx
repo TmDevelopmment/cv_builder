@@ -37,7 +37,7 @@ const PersonalInfoForm = ({
       required: true,
     },
     { key: "phone", label: "Phone Number", icon: Phone, type: "tel" },
-    { key: "address", label: "Location", icon: MapPin, type: "text" },
+    { key: "location", label: "Location", icon: MapPin, type: "text" },
     {
       key: "profession",
       label: "Profession",
