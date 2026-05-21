@@ -3,22 +3,19 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import Preview from "./pages/Preview";
-import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
 import Layout from "./pages/Layout";
 import { useDispatch } from "react-redux";
 import { setLoading } from "./app/features/authSlice";
 import api from "../configs/api";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
-
+import { login } from "./app/features/authSlice";
 
 const App = () => {
   const dispatch = useDispatch();
 
   const getUserData = async () => {
     const token = localStorage.getItem("token");
-    console.log(token);
     try {
       if (token) {
         const { data } = await api.get("/api/users/data", {
@@ -27,7 +24,7 @@ const App = () => {
           },
         });
         if (data.user) {
-          dispatch({ type: "auth/login", payload: { user: data.user, token } });
+          dispatch(login({ token, user: data.user }));
         }
         dispatch(setLoading(false));
       } else {
