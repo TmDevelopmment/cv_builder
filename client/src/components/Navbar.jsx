@@ -1,21 +1,20 @@
 import { Link } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { logout } from "../app/features/authSlice";
 
 const Navbar = () => {
 
 
-  const user = {
-    name: "John Doe",
-    avatar:
-      "https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80",
-  };
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
   const LogOutUser = () => {
-    localStorage.removeItem("token");
-    window.location.reload();
     navigate("/");
+    dispatch(logout());
   }
 
   return (
