@@ -11,7 +11,7 @@ const generateToken = (userId) => {
 // POST /api/users/register
 export const registerUser = async (req, res) => {
     try {
-        const {} = req.body;
+        const { name, email, password } = req.body;
 
         // check if fields are empty
         if (!name || !email || !password) {
@@ -83,7 +83,8 @@ export const logoutUser = async (req, res) => {
 
 export const getUserById = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.userId;
+        console.log("Getting user data for user ID:", userId);
         const user = await User.findById(userId)
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -98,7 +99,7 @@ export const getUserById = async (req, res) => {
 // PUT /api/users/update
 export const updateUser = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.userId;
         const { name, email, password } = req.body;
         const updatedData = {};
 
@@ -124,7 +125,8 @@ export const updateUser = async (req, res) => {
 // GET /api/users/resumes
 export const getUserResumes = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.userId;
+        console.log("Getting resumes for user ID:", userId);
         const resumes = await Resume.find({ userId });
         return res.status(200).json(resumes);
     } catch (error) {
