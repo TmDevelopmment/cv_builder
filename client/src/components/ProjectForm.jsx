@@ -1,5 +1,8 @@
-import { Plus, Trash2, Sparkles, Briefcase } from "lucide-react";
-const ProjectForm = ({ data = [], onChange }) => {
+import { Plus, Trash2, Sparkles } from "lucide-react";
+const ProjectForm = ({ data, onChange }) => {
+
+  console.log("ProjectForm data:", data);
+
   const addProject = () => {
     const newProject = {
       name: "",
@@ -44,7 +47,7 @@ const ProjectForm = ({ data = [], onChange }) => {
       </div>
       
         <div>
-          {data.map((project, index) => (
+          {data.map((projects, index) => (
             <div
               key={index}
               className="p-4 border border-gray-200 rounded-lg space-y-3"
@@ -58,20 +61,20 @@ const ProjectForm = ({ data = [], onChange }) => {
 
               <div className="grid md:grid-cols-2 gap-3">
                 <input
-                  value={project.name || ""}
+                  value={projects.name || ""}
                   onChange={(e) => updateProject(index, "name", e.target.value)}
                   placeholder="Project Name"
                   className="w-full px-3 py-2 text-sm rounded-lg"
                 />
                 <input
-                  value={project.type || ""}
+                  value={projects.type || ""}
                   onChange={(e) => updateProject(index, "type", e.target.value)}
                   placeholder="Project Type (e.g., Personal, Academic, Professional)"
                   className="w-full px-3 py-2 text-sm rounded-lg"
                 />
                 <input
                   type="date"
-                  value={project.start_date || ""}
+                  value={projects.start_date || ""}
                   onChange={(e) =>
                     updateProject(index, "start_date", e.target.value)
                   }
@@ -80,7 +83,7 @@ const ProjectForm = ({ data = [], onChange }) => {
                 />
                 <input
                   type="month"
-                  value={project.end_date || ""}
+                  value={projects.end_date || ""}
                   onChange={(e) =>
                     updateProject(index, "end_date", e.target.value)
                   }
@@ -91,7 +94,7 @@ const ProjectForm = ({ data = [], onChange }) => {
               <label className="flex items-center mt-2">
                 <input
                   type="checkbox"
-                  checked={project.is_current || false}
+                  checked={projects.is_current || false}
                   onChange={(e) =>
                     updateProject(
                       index,
@@ -116,7 +119,7 @@ const ProjectForm = ({ data = [], onChange }) => {
                 </div>
                 <textarea
                   rows={4}
-                  value={project.description || ""}
+                  value={projects.description || ""}
                   onChange={(e) =>
                     updateProject(index, "description", e.target.value)
                   }
