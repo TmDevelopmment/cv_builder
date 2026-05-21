@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { dummyResumeData } from "../assets/assets";
+// import { dummyResumeData } from "../assets/assets";
 import {
   ArrowLeftIcon,
   Briefcase,
@@ -8,7 +8,6 @@ import {
   ChevronRight,
   DownloadIcon,
   EyeIcon,
-  EyeOff,
   EyeOffIcon,
   FileText,
   FolderIcon,
@@ -26,9 +25,14 @@ import ExperienceForm from "../components/ExperienceForm";
 import EducationForm from "../components/EducationForm";
 import ProjectForm from "../components/ProjectForm";
 import SkillsForm from "../components/SkillsForm";
+import { useSelector } from "react-redux";
+import api from "../../configs/api";
+import toast from "react-hot-toast";
 
 const ResumeBuilder = () => {
   const { resumeId } = useParams();
+
+  const { token } = useSelector((state) => state.auth);
 
   const [resumeData, setResumeData] = useState({
     _id: "",
@@ -45,12 +49,26 @@ const ResumeBuilder = () => {
   });
 
   const loadExistingResume = async (resumeId) => {
-    const resume = dummyResumeData.find((res) => res._id === resumeId);
-    if (resume) {
-      setResumeData(resume);
-      document.title = resume.title;
-    } else {
-      console.error("Resume not found");
+    // const resume = dummyResumeData.find((res) => res._id === resumeId);
+    // if (resume) {
+    //   setResumeData(resume);
+    //   document.title = resume.title;
+    // } else {
+    //   console.error("Resume not found");
+    // }
+    try {
+      const { data } = await api.get('/api/resumes/get/' + resumeId, {
+        headers: {
+          Authorization: token
+        }
+      });
+      console.log("Resume data fetched:", data);
+      if (data) {
+        document.title = data.title;
+      }
+      setResumeData(data);
+    } catch (error) {
+      console.log(error?.response?.data?.message || error.message);
     }
   };
 
@@ -74,10 +92,26 @@ const ResumeBuilder = () => {
 
   useEffect(() => {
     loadExistingResume(resumeId);
-  }, [resumeId]);
+  }, []);
 
   const changeResumeVisibility = () => {
-    setResumeData({...resumeData, public: !resumeData.public});
+    // setResumeData({...resumeData, public: !resumeData.public});
+    try {
+
+      const formData = new FormData();
+      formData.append("resumeId", resumeId);
+      formData.append("resumeData", JSON.stringify({public: !resumeData.public}));
+
+      const { data } = api.put('/api/resumes/update', formData, {
+        headers: {
+          Authorization: token,
+        }
+      });
+      setResumeData({...resumeData, public: !resumeData.public});
+      toast.success(data.message);
+    } catch (error) {
+      console.log(error?.response?.data?.message || error.message);
+    }
   }
 
   const handleShare = () => {
@@ -96,6 +130,33 @@ const ResumeBuilder = () => {
 
   const downloadResume = () => {
     window.print();
+  }
+
+  const saveResume = async () => {
+    try {
+      let updatedResumeData = structuredClone(resumeData);
+
+      // remove image from updatedResumeData before sending to server
+      if(typeof resumeData.personal_info.image === "object") {
+        delete updatedResumeData.personal_info.image;
+      }
+
+      const formData = new FormData();
+      formData.append("resumeId", resumeId);
+      formData.append("resumeData", JSON.stringify(updatedResumeData));
+      removeBackground && formData.append("removeBackground", "yes");
+      typeof resumeData.personal_info.image === "object" && formData.append("image", resumeData.personal_info.image);
+
+      const { data } = await api.put('/api/resumes/update', formData, {
+        headers: {
+          Authorization: token,
+        }
+      });
+      setResumeData(data.resume);
+      toast.success(data.message);
+    } catch (error) {
+      console.log(error?.response?.data?.message || error.message);
+    }
   }
 
   return (
@@ -126,7 +187,7 @@ const ResumeBuilder = () => {
                 <div className="flex justify-between items-center mb-6 border-b border-gray-300 py-1">
                   <div className="flex items-center gap-2">
                     <TemplateSelector 
-                      selectedTemplate={resumeData.templates} 
+                      selectedTemplate={resumeData.template} 
                       onChange={(template) => setResumeData(prev => ({ ...prev, template}))} 
                     />
                     <ColorPicker 
@@ -223,11 +284,11 @@ const ResumeBuilder = () => {
                     {activeSection.id === "projects" && (
                       <div>
                         <ProjectForm
-                          data={resumeData.project}
+                          data={resumeData.projects}
                           onChange={(data) =>
                             setResumeData((prev) => ({
                               ...prev,
-                              project: data,
+                              projects: data,
                             }))
                           }
                         />
@@ -247,6 +308,9 @@ const ResumeBuilder = () => {
                       </div>
                     )}
                 </div>
+                <button onClick={() => {toast.promise(saveResume, {loading: 'Saving....'})}} className="mt-6 w-full py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg transition-all" >
+                  Save Changes
+                </button>
               </div>
             </div>
             {/*Right Pannel - Resume Preview Section */}
