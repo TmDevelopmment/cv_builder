@@ -84,7 +84,6 @@ export const logoutUser = async (req, res) => {
 export const getUserById = async (req, res) => {
     try {
         const userId = req.userId;
-        console.log("Getting user data for user ID:", userId);
         const user = await User.findById(userId)
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -126,7 +125,6 @@ export const updateUser = async (req, res) => {
 export const getUserResumes = async (req, res) => {
     try {
         const userId = req.userId;
-        console.log("Getting resumes for user ID:", userId);
         const resumes = await Resume.find({ userId });
         return res.status(200).json(resumes);
     } catch (error) {

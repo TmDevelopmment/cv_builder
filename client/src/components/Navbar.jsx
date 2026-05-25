@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { logout } from "../app/features/authSlice";
+import image from "../assets/logo.svg";
 
 const Navbar = () => {
 
@@ -20,8 +21,8 @@ const Navbar = () => {
   return (
     <div className="shadow bg-white">
       <nav className="flex items-center justify-between max-w-7xl mx-auto px-4 py-3.5 text-slate-800 transition-all">
-        <Link to="/">
-          <img src="../assets/logo.svg" alt="logo" />
+        <Link to="/" className="flex items-center">
+          <img src={image} alt="logo" />
         </Link>
         <div className="flex items-center gap-4">
             <p className=" text-black">Hi, {user.name}</p>
